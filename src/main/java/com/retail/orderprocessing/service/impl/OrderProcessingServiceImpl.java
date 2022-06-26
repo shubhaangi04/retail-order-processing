@@ -54,6 +54,7 @@ public class OrderProcessingServiceImpl implements OrderProcessingService {
     order.setOrderTime(new Date());
     order.setLastUpdatedTime(new Date());
     Order savedOrder = orderProcessingRepository.save(order);
+    logger.info(String.format("Order Placed (Order Id: %s)", order.getOrderId()));
     try {
       producerService.sendOrder(
           topicName,
@@ -94,6 +95,7 @@ public class OrderProcessingServiceImpl implements OrderProcessingService {
             order.setOrderStatus(OrderStatus.PROCESSED.toString());
             order.setLastUpdatedTime(new Date());
             orderProcessingRepository.save(order);
+            logger.info(String.format("Order Processed (Order Id: %s)", order.getOrderId()));
           },
           () -> logger.error("Order ID does not exist"));
     } catch (JsonProcessingException e) {
