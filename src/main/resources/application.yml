@@ -1,0 +1,22 @@
+api:
+  name: retail_order_processing
+  version: v1
+spring:
+  data:
+    mongodb:
+      database: retail-order
+      uri: mongodb://root:pass@localhost:27017/?authSource=admin
+      repositories.enabled: true
+server:
+  error:
+    include-message: always
+app:
+  auth:
+    header: Authorization
+    token: e383f9fe-6649-94f5-2299-ba935d1eff
+    username: admuser
+    password: admpass
+  kafka:
+    topic_name: order-processing
+    server: localhost:29092
+    compression-type: gzip
