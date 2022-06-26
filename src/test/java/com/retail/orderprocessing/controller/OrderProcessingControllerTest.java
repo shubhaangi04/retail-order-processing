@@ -44,7 +44,13 @@ public class OrderProcessingControllerTest {
     orderDate = new Date();
     orderDTO =
         new OrderDTO(
-            "1", OrderStatus.PLACED.toString(), "Customer 1", productList, orderDate, 150.0f);
+            "1",
+            OrderStatus.PLACED.toString(),
+            "Customer 1",
+            productList,
+            orderDate,
+            orderDate,
+            150.0f);
   }
 
   @DisplayName("Test place order")

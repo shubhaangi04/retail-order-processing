@@ -49,10 +49,23 @@ public class OrderProcessingServiceImplTest {
     productList.add(new Product("5", "Product 5", 50.0f));
     orderDate = new Date();
     order =
-        new Order("1", OrderStatus.PLACED.toString(), "Customer 1", productList, orderDate, 150.0f);
+        new Order(
+            "1",
+            OrderStatus.PLACED.toString(),
+            "Customer 1",
+            productList,
+            orderDate,
+            orderDate,
+            150.0f);
     orderDTO =
         new OrderDTO(
-            "1", OrderStatus.PLACED.toString(), "Customer 1", productList, orderDate, 150.0f);
+            "1",
+            OrderStatus.PLACED.toString(),
+            "Customer 1",
+            productList,
+            orderDate,
+            orderDate,
+            150.0f);
   }
 
   @DisplayName("Test order create")
