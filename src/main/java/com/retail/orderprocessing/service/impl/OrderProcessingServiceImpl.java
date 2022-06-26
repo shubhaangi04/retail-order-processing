@@ -68,12 +68,14 @@ public class OrderProcessingServiceImpl implements OrderProcessingService {
 
   @Override
   public OrderDTO getOrderDetailsByOrderId(String orderId) {
-    if (!orderProcessingRepository.existsById(orderId)) {
-      logger.error("Order does not exist by id : " + orderId);
-      throw new ResponseStatusException(
-          HttpStatus.BAD_REQUEST, "Order does not exist by id : " + orderId);
-    }
-    return modelMapper.map(orderProcessingRepository.findById(orderId), OrderDTO.class);
+    Order order =
+        orderProcessingRepository
+            .findById(orderId)
+            .orElseThrow(
+                () ->
+                    new ResponseStatusException(
+                        HttpStatus.BAD_REQUEST, "Order does not exist by id : " + orderId));
+    return modelMapper.map(order, OrderDTO.class);
   }
 
   @Override
@@ -85,9 +87,8 @@ public class OrderProcessingServiceImpl implements OrderProcessingService {
 
   @Override
   public void updateOrderStatus(String orderDetails) {
-    Order orderData;
     try {
-      orderData = new ObjectMapper().readValue(orderDetails, Order.class);
+      Order orderData = new ObjectMapper().readValue(orderDetails, Order.class);
       Optional<Order> optionalOrderDetails =
           orderProcessingRepository.findById(orderData.getOrderId());
       optionalOrderDetails.ifPresentOrElse(
