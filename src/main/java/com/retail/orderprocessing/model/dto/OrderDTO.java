@@ -28,6 +28,9 @@ public class OrderDTO {
   @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss z")
   private Date orderTime;
 
+  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss z")
+  private Date lastUpdatedTime;
+
   @DecimalMin(value = "0.0", message = "Total price should be grater than or equal to 0")
   private double totalPrice;
 }

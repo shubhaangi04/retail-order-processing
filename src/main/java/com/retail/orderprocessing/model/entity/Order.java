@@ -25,5 +25,8 @@ public class Order {
   @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss z")
   private Date orderTime;
 
+  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss z")
+  private Date lastUpdatedTime;
+
   private double totalPrice;
 }

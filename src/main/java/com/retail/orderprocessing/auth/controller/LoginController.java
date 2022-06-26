@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
+
 @RestController
 @RequestMapping("/v1/login")
 public class LoginController {
@@ -22,7 +24,7 @@ public class LoginController {
   }
 
   @PostMapping
-  ResponseEntity<String> login(@RequestBody User user) {
+  ResponseEntity<String> login(@Valid @RequestBody User user) {
     return new ResponseEntity<>(loginService.login(user), HttpStatus.OK);
   }
 }

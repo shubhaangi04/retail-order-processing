@@ -47,11 +47,12 @@ public class OrderProcessingServiceImpl implements OrderProcessingService {
   }
 
   @Override
-  public OrderDTO createOrder(OrderDTO orderDto) {
-    Order order = modelMapper.map(orderDto, Order.class);
+  public OrderDTO createOrder(OrderDTO orderDTO) {
+    Order order = modelMapper.map(orderDTO, Order.class);
     order.setOrderId(UUID.randomUUID().toString());
     order.setOrderStatus(OrderStatus.PLACED.toString());
     order.setOrderTime(new Date());
+    order.setLastUpdatedTime(new Date());
     Order savedOrder = orderProcessingRepository.save(order);
     try {
       producerService.sendOrder(
@@ -91,6 +92,7 @@ public class OrderProcessingServiceImpl implements OrderProcessingService {
       optionalOrderDetails.ifPresentOrElse(
           order -> {
             order.setOrderStatus(OrderStatus.PROCESSED.toString());
+            order.setLastUpdatedTime(new Date());
             orderProcessingRepository.save(order);
           },
           () -> logger.error("Order ID does not exist"));
