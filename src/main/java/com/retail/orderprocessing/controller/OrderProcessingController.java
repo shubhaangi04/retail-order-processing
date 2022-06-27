@@ -22,8 +22,8 @@ public class OrderProcessingController {
   }
 
   @PostMapping
-  public ResponseEntity<OrderDTO> placeOrder(@Valid @RequestBody OrderDTO orderDto) {
-    return new ResponseEntity<>(orderProcessingService.createOrder(orderDto), HttpStatus.CREATED);
+  public ResponseEntity<OrderDTO> placeOrder(@Valid @RequestBody OrderDTO orderDTO) {
+    return new ResponseEntity<>(orderProcessingService.createOrder(orderDTO), HttpStatus.CREATED);
   }
 
   @GetMapping

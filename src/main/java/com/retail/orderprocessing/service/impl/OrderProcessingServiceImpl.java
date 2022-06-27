@@ -47,12 +47,14 @@ public class OrderProcessingServiceImpl implements OrderProcessingService {
   }
 
   @Override
-  public OrderDTO createOrder(OrderDTO orderDto) {
-    Order order = modelMapper.map(orderDto, Order.class);
+  public OrderDTO createOrder(OrderDTO orderDTO) {
+    Order order = modelMapper.map(orderDTO, Order.class);
     order.setOrderId(UUID.randomUUID().toString());
     order.setOrderStatus(OrderStatus.PLACED.toString());
     order.setOrderTime(new Date());
+    order.setLastUpdatedTime(new Date());
     Order savedOrder = orderProcessingRepository.save(order);
+    logger.info(String.format("Order Placed (Order Id: %s)", order.getOrderId()));
     try {
       producerService.sendOrder(
           topicName,
@@ -66,12 +68,14 @@ public class OrderProcessingServiceImpl implements OrderProcessingService {
 
   @Override
   public OrderDTO getOrderDetailsByOrderId(String orderId) {
-    if (!orderProcessingRepository.existsById(orderId)) {
-      logger.error("Order does not exist by id : " + orderId);
-      throw new ResponseStatusException(
-          HttpStatus.BAD_REQUEST, "Order does not exist by id : " + orderId);
-    }
-    return modelMapper.map(orderProcessingRepository.findById(orderId), OrderDTO.class);
+    Order order =
+        orderProcessingRepository
+            .findById(orderId)
+            .orElseThrow(
+                () ->
+                    new ResponseStatusException(
+                        HttpStatus.BAD_REQUEST, "Order does not exist by id : " + orderId));
+    return modelMapper.map(order, OrderDTO.class);
   }
 
   @Override
@@ -83,15 +87,16 @@ public class OrderProcessingServiceImpl implements OrderProcessingService {
 
   @Override
   public void updateOrderStatus(String orderDetails) {
-    Order orderData;
     try {
-      orderData = new ObjectMapper().readValue(orderDetails, Order.class);
+      Order orderData = new ObjectMapper().readValue(orderDetails, Order.class);
       Optional<Order> optionalOrderDetails =
           orderProcessingRepository.findById(orderData.getOrderId());
       optionalOrderDetails.ifPresentOrElse(
           order -> {
             order.setOrderStatus(OrderStatus.PROCESSED.toString());
+            order.setLastUpdatedTime(new Date());
             orderProcessingRepository.save(order);
+            logger.info(String.format("Order Processed (Order Id: %s)", order.getOrderId()));
           },
           () -> logger.error("Order ID does not exist"));
     } catch (JsonProcessingException e) {

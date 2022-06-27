@@ -5,7 +5,7 @@ import com.retail.orderprocessing.model.dto.OrderDTO;
 import java.util.List;
 
 public interface OrderProcessingService {
-  OrderDTO createOrder(OrderDTO orderDto);
+  OrderDTO createOrder(OrderDTO orderDTO);
 
   OrderDTO getOrderDetailsByOrderId(String orderId);
 

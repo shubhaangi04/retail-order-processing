@@ -49,10 +49,23 @@ public class OrderProcessingServiceImplTest {
     productList.add(new Product("5", "Product 5", 50.0f));
     orderDate = new Date();
     order =
-        new Order("1", OrderStatus.PLACED.toString(), "Customer 1", productList, orderDate, 150.0f);
+        new Order(
+            "1",
+            OrderStatus.PLACED.toString(),
+            "Customer 1",
+            productList,
+            orderDate,
+            orderDate,
+            150.0f);
     orderDTO =
         new OrderDTO(
-            "1", OrderStatus.PLACED.toString(), "Customer 1", productList, orderDate, 150.0f);
+            "1",
+            OrderStatus.PLACED.toString(),
+            "Customer 1",
+            productList,
+            orderDate,
+            orderDate,
+            150.0f);
   }
 
   @DisplayName("Test order create")
@@ -79,13 +92,11 @@ public class OrderProcessingServiceImplTest {
   @DisplayName("Test Get order by id for order exists")
   @Test
   public void testGetOrderDetailsByOrderId() {
-    given(mockOrderProcessingRepository.existsById(Mockito.anyString())).willReturn(true);
     given(mockOrderProcessingRepository.findById(Mockito.anyString()))
         .willReturn(Optional.of(order));
     given(modelMapper.map(Mockito.any(), Mockito.any())).willReturn(orderDTO);
 
     OrderDTO actualOrderDTO = orderProcessingService.getOrderDetailsByOrderId("Some Id");
-    verify(mockOrderProcessingRepository, times(1)).existsById(Mockito.anyString());
     verify(mockOrderProcessingRepository, times(1)).findById(Mockito.anyString());
     assertThat(actualOrderDTO.getOrderId()).isEqualTo("1");
     assertThat(actualOrderDTO.getOrderStatus()).isEqualTo(OrderStatus.PLACED.toString());
@@ -98,13 +109,11 @@ public class OrderProcessingServiceImplTest {
   @DisplayName("Test Get order by id for order does not exist")
   @Test
   public void testGetOrderDetailsByOrderIdWhenOrderDoesNotExist() {
-    given(mockOrderProcessingRepository.existsById(Mockito.anyString())).willReturn(false);
-
+    given(mockOrderProcessingRepository.findById(Mockito.anyString())).willReturn(Optional.empty());
     assertThrows(
         ResponseStatusException.class,
         () -> orderProcessingService.getOrderDetailsByOrderId("Some Id"));
-    verify(mockOrderProcessingRepository, times(1)).existsById(Mockito.anyString());
-    verify(mockOrderProcessingRepository, times(0)).findById(Mockito.anyString());
+    verify(mockOrderProcessingRepository, times(1)).findById(Mockito.anyString());
   }
 
   @DisplayName("Test Get all orders for non-empty data")
